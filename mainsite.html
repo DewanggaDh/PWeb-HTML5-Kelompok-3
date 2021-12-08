@@ -28,7 +28,32 @@
           border: 1px solid #000000;
         }
       </style>
+      <script type="text/javascript">
+        var database = openDatabase('database', '1.0', 'HTML5 SQL', 2 * 1024 * 1024);
+        var message;
+        database.transaction(function (dabby) {
+          dabby.executeSql('create table if not exists loggers (id unique, log)');
+          dabby.executeSql('insert into loggers (id, log) values (1, "St. Jimmy")');
+          dabby.executeSql('insert into loggers (id, log) values (2, "Karma Police")');
+          dabby.executeSql('insert into loggers (id, log) values (3, "Buddy Holly")');
+          dabby.executeSql('insert into loggers (id, log) values (4, "Wallspin")');
+          message = '<p>Obladi Oblada</p>';
+          document.querySelector('#status').innerHTML = message;
+        });
 
+        database.transaction(function (dabby) {
+          dabby.executeSql('select * from loggers', [], function (dabby, results) {
+            var len = results.rows.lenght, i;
+            message = "<p>Nomor len = " + len + "</p>";
+            document.querySelector('#status').innerHTML += message;
+
+            for (i = 0; i < len; i++){
+              message = "<p><b>" + results.rows.item(i).log + "</b></p>";
+              document.querySelector('#status').innerHTML += message;
+            }
+          }, null);
+        });
+      </script>
   </head>
 <body>
 
@@ -107,6 +132,12 @@
  
    <p>Refresh the page to increase number of hits.</p>
    <p>Close the window and open it again and check the result.</p>
+  </div>   
+</div>
+<br>
+<div class="row align-items-center text-center"  style="background:orange">
+  <div class="col">
+    <div id = "status" name = "status">Massage</div>
   </div>   
 </div>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
